@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compact CFS - Operations Management System Proposal | Synaptis AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #000000;
+        }
+        
+        /* Full page persistent background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Hero Section with Synaptis Branding */
+        .hero {
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #ec4899 100%);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .synaptis-logo {
+            margin-bottom: -55px;
+            margin-top: -55px;
+        }
+
+        .synaptis-logo img {
+            height: 350px;  /* Adjust size as needed */
+            width: auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -2px;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .hero .company {
+            font-size: 1.6rem;
+            margin-top: 30px;
+            font-weight: 600;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 80px 40px;
+        }
+        
+        .section-alt {
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+        
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .intro-text {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+            line-height: 1.9;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .disclaimer {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            text-align: center;
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Problem Cards - 2x2 Grid */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 30px;
+            margin: 50px 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .problem-card {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .problem-card:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-color: rgba(255, 68, 68, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .problem-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .problem-card h4 {
+            font-size: 1.4rem;
+            color: #ff4444;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .problem-card p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        /* Solution Modules */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+            margin: 50px 0;
+        }
+        
+        .module-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+        
+        .module-card:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-color: rgba(0, 212, 255, 0.4);
+            transform: translateY(-10px);
+        }
+        
+        .module-card .number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
+            color: white;
+            border-radius: 50%;
+            line-height: 60px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        .module-card h4 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .module-card p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        
+        /* Feature Lists */
+        .features {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+        
+        .features h4 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 15px 0 15px 40px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        /* Benefits Section */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .benefit-card {
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
+            color: white;
+            padding: 40px 25px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .benefit-card .stat {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-card p {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 60px;
+            margin: 50px 0;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #00d4ff 0%, #a855f7 100%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -48px;
+            top: 35px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
+            border-radius: 50%;
+            border: 4px solid #000000;
+        }
+        
+        .timeline-item h4 {
+            color: #00d4ff;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .timeline-item p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        /* Deliverables */
+        .deliverables {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .deliverable {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .deliverable:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+        
+        .deliverable:before {
+            content: "✓";
+            color: #00d4ff;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .deliverable p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* Support Box */
+        .support-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 50px;
+            border-radius: 25px;
+            margin: 50px 0;
+        }
+        
+        .support-box h3 {
+            color: #00d4ff;
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+        
+        .support-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .support-item {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .support-item h4 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .support-item p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #ec4899 100%);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 25px;
+            font-size: 3rem;
+            background: none;
+            -webkit-text-fill-color: white;
+        }
+        
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+            opacity: 0.95;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .step {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 35px 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .step-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        
+        .step p {
+            font-size: 1.05rem;
+            opacity: 0.95;
+        }
+        
+        .contact {
+            margin-top: 50px;
+            font-size: 1.15rem;
+        }
+        
+        .contact a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        .contact a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .problem-grid,
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefits-grid,
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .deliverables,
+            .support-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            section {
+                padding: 50px 25px;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .timeline {
+                padding-left: 40px;
+            }
+            
+            .benefits-grid,
+            .steps,
+            .deliverables,
+            .support-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="synaptis-logo">
+                    <img src="Synaptis_Logo.png" alt="Synaptis AI">
+                </div>
+                <h1>Transform Your Operations</h1>
+                <p class="subtitle">Prevent shutdowns. Optimize capacity. Scale with confidence.</p>
+                <p class="company">Proposal for Compact CFS</p>
+            </div>
+        </section>
+
+        <!-- The Challenge -->
+        <section>
+            <h2>The Challenge You're Facing</h2>
+            <p class="intro-text">
+                Manual processes are creating operational risk and limiting your growth potential. 
+                Every missed deadline, every bottleneck, every manual process is costing you time and money.
+            </p>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="icon">⚠️</div>
+                    <h4>Business Shutdowns</h4>
+                    <p>Missed bond retirement deadlines lead to costly operational shutdowns and lost revenue opportunities.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">🔒</div>
+                    <h4>Critical Bottleneck</h4>
+                    <p>Single point of failure for bond data access creates delays and operational risk across the organization.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">📦</div>
+                    <h4>Capacity Blindness</h4>
+                    <p>No systematic tracking across multiple warehouses means turning away business unnecessarily.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">📞</div>
+                    <h4>Communication Overload</h4>
+                    <p>Staff overwhelmed with daily repetitive client inquiries instead of focusing on strategic work.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section class="section-alt">
+            <h2>Our Solution: Four Integrated Modules</h2>
+            <p class="intro-text">
+                A comprehensive operations management system that works alongside your existing Dynamics 365, 
+                automating critical tasks while giving your team unprecedented visibility and control.
+            </p>
+            
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="number">1</div>
+                    <h4>Bond Management</h4>
+                    <p>Real-time tracking, automated alerts, and team visibility to prevent shutdowns and optimize bond capacity.</p>
+                </div>
+                <div class="module-card">
+                    <div class="number">2</div>
+                    <h4>Storage Capacity</h4>
+                    <p>Track occupancy across all warehouses with predictive alerts and intelligent assignment recommendations.</p>
+                </div>
+                <div class="module-card">
+                    <div class="number">3</div>
+                    <h4>Client Communication</h4>
+                    <p>WhatsApp automation for vetting, status updates, and instant responses—scale without hiring.</p>
+                </div>
+                <div class="module-card">
+                    <div class="number">4</div>
+                    <h4>Analytics & Reporting</h4>
+                    <p>Auto-generated insights and dashboards for data-driven decisions in seconds, not hours.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module Details -->
+        <section>
+            <h2>What You Get</h2>
+            
+            <div class="features">
+                <h4>Module 1: Bond Management</h4>
+                <ul>
+                    <li>Staff input interface for bond data (capacity, expiry, bond numbers)</li>
+                    <li>Real-time utilization tracking with visual gauges</li>
+                    <li>Automated alerts at 70%, 85%, 95% capacity thresholds</li>
+                    <li>Expiry warnings at 90, 60, 30 days before deadline</li>
+                    <li>Team visibility dashboard—everyone sees bond status without asking</li>
+                    <li>Cargo-to-bond linking for complete transparency</li>
+                </ul>
+            </div>
+
+            <div class="features">
+                <h4>Module 2: Storage Capacity Management</h4>
+                <ul>
+                    <li>Flexible warehouse management—add, edit, or remove warehouses as needed</li>
+                    <li>CBM-based occupancy tracking across all facilities</li>
+                    <li>Predictive capacity alerts 5-7 days in advance</li>
+                    <li>Warehouse assignment recommendations for incoming cargo</li>
+                    <li>Real-time visibility into space utilization</li>
+                    <li>Stop turning away business due to capacity uncertainty</li>
+                </ul>
+            </div>
+
+            <div class="features">
+                <h4>Module 3: Client Communication Hub</h4>
+                <ul>
+                    <li>WhatsApp chatbot for new client vetting and pre-qualification</li>
+                    <li>Automated status updates when cargo status changes in Dynamics 365</li>
+                    <li>Instant responses to common queries 24/7</li>
+                    <li>Intelligent escalation to staff for complex issues</li>
+                    <li>Conversation management dashboard for team oversight</li>
+                    <li>Reduce repetitive inquiries by 70%+</li>
+                </ul>
+            </div>
+
+            <div class="features">
+                <h4>Module 4: Analytics & Reporting</h4>
+                <ul>
+                    <li>Real-time executive dashboard with key performance indicators</li>
+                    <li>Automated daily, weekly, and monthly reports via email</li>
+                    <li>Client segmentation (VIP, Growing, Transactional, High-Risk)</li>
+                    <li>On-demand report generation with custom filters</li>
+                    <li>Export to PDF or Excel for sharing</li>
+                    <li>Save 10+ hours weekly on manual report compilation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Expected Impact -->
+        <section class="section-alt">
+            <h2>Expected Impact</h2>
+            <p class="intro-text">
+                Based on similar implementations and your current operations, here's the potential impact you can expect:
+            </p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="stat">0%</div>
+                    <p>Shutdowns due to missed deadlines</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="stat">50-70%</div>
+                    <p>Reduction in repetitive client inquiries</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="stat">5-7</div>
+                    <p>Days advance warning for capacity issues</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="stat">8-12</div>
+                    <p>Hours saved weekly on manual reporting</p>
+                </div>
+            </div>
+
+            <p class="disclaimer">
+                * These projections are estimates based on similar implementations and industry benchmarks. 
+                Actual results will vary based on your team's adoption, operational processes, and business volume. 
+                We'll establish baseline metrics during implementation to track your specific improvements.
+            </p>
+        </section>
+
+        <!-- Implementation Timeline -->
+        <section>
+            <h2>14-Week Implementation Timeline</h2>
+            <p class="intro-text">
+                A phased approach with regular demos ensures you see progress and provide feedback every step of the way.
+            </p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Weeks 1-4: Foundation</h4>
+                    <p>Infrastructure setup, Dynamics 365 API integration, database architecture, and user authentication framework.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Weeks 5-10: Module Development</h4>
+                    <p>Build all 4 modules with weekly demos. Your feedback shapes the solution as we build together.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Weeks 11-13: Testing & Refinement</h4>
+                    <p>End-to-end testing with your real data, user acceptance testing, performance optimization, and final adjustments.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Week 14: Launch & Training</h4>
+                    <p>Comprehensive team training (8 hours), documentation handover, go-live support, and system monitoring.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deliverables -->
+        <section class="section-alt">
+            <h2>Complete Solution Package</h2>
+            <p class="intro-text">
+                Everything you need for long-term success, included in one comprehensive package.
+            </p>
+            
+            <div class="deliverables">
+                <div class="deliverable">
+                    <p>Web-based dashboard (desktop + mobile responsive)</p>
+                </div>
+                <div class="deliverable">
+                    <p>Four modules fully configured for your workflows</p>
+                </div>
+                <div class="deliverable">
+                    <p>Integration with Dynamics 365 Business Central</p>
+                </div>
+                <div class="deliverable">
+                    <p>WhatsApp Business API setup and configuration</p>
+                </div>
+                <div class="deliverable">
+                    <p>8 hours of comprehensive user training</p>
+                </div>
+                <div class="deliverable">
+                    <p>Complete user manuals and guides</p>
+                </div>
+                <div class="deliverable">
+                    <p>Technical documentation and architecture diagrams</p>
+                </div>
+                <div class="deliverable">
+                    <p>Full source code ownership</p>
+                </div>
+                <div class="deliverable">
+                    <p>30-day warranty for bug fixes</p>
+                </div>
+                <div class="deliverable">
+                    <p>Role-based access control and security</p>
+                </div>
+                <div class="deliverable">
+                    <p>Cloud hosting on AWS infrastructure</p>
+                </div>
+                <div class="deliverable">
+                    <p>Automated backup and disaster recovery</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ongoing Support -->
+        <section>
+            <div class="support-box">
+                <h3>Ongoing Support & Maintenance Included</h3>
+                <p style="margin-bottom: 30px; color: rgba(255, 255, 255, 0.85);">Your monthly subscription includes comprehensive support to ensure smooth operations and continuous improvement.</p>
+                
+                <div class="support-features">
+                    <div class="support-item">
+                        <h4>Hosting & Infrastructure</h4>
+                        <p>Cloud hosting, automated backups, security updates, and 99.5%+ uptime guarantee</p>
+                    </div>
+                    <div class="support-item">
+                        <h4>Technical Support</h4>
+                        <p>12 hours of support per month for questions, troubleshooting, and adjustments</p>
+                    </div>
+                    <div class="support-item">
+                        <h4>API & Integration</h4>
+                        <p>All AI API usage, WhatsApp Business API, and third-party service costs covered</p>
+                    </div>
+                    <div class="support-item">
+                        <h4>System Monitoring</h4>
+                        <p>Proactive monitoring, performance optimization, and issue resolution</p>
+                    </div>
+                    <div class="support-item">
+                        <h4>Updates & Enhancements</h4>
+                        <p>Regular feature improvements, security patches, and system updates</p>
+                    </div>
+                    <div class="support-item">
+                        <h4>Priority Response</h4>
+                        <p>Dedicated support channel with same-day response to urgent issues</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="section-alt">
+            <h2>How It Works</h2>
+            <p class="intro-text">
+                Seamless integration with your existing systems—no disruption to your current operations.
+            </p>
+            
+            <div class="features">
+                <h4>Technical Approach</h4>
+                <ul>
+                    <li>Connects to your Dynamics 365 Business Central via secure API (read-only, no disruption)</li>
+                    <li>WhatsApp Business API integration for client communication</li>
+                    <li>Cloud-hosted on AWS for reliability and security</li>
+                    <li>Mobile-responsive design works on any device</li>
+                    <li>Role-based access ensures data security</li>
+                    <li>Your team trained and fully supported throughout</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Transform Your Operations?</h2>
+            <p>Let's discuss how this solution can be tailored to your specific needs</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <p>Approve Proposal</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <p>Sign Contract and NDA Documents</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <p>Finalize project scope</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <p>Begin implementation</p>
+                </div>
+            </div>
+            
+            <div class="contact">
+                <p>Contact us today: <a href="mailto:contact@synaptisai.com">contact@synaptisai.com</a></p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
